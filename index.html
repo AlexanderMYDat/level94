@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Level 94 — Motion</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: system-ui, sans-serif; }
+    canvas { display: block; }
+    #hud { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff;
+           background: rgba(10, 14, 20, .5); text-align: center; cursor: pointer; line-height: 1.7; z-index: 2; }
+    #hud.hidden { display: none; }
+    #fps { position: fixed; top: 8px; left: 10px; color: #fff; font: 12px monospace; text-shadow: 0 0 3px #000; z-index: 1; }
+    #dot { position: fixed; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: rgba(255,255,255,.8); z-index: 1; }
+  </style>
+</head>
+<body>
+  <div id="hud"><div id="hudText">Cargando…</div></div>
+  <div id="fps"></div><div id="dot"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
