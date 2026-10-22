@@ -12,12 +12,17 @@ export const MOUSE_SENS_Y = 0.0034;
 const RADIUS = 0.35, HEIGHT = 1.8, EYE = 1.65;
 const MAX_STEP = 1 / 90;  // subpasos de física para no atravesar paredes corriendo (8,5 m/s → < 10 cm por paso)
 
+/** Teclas de movimiento: cualquiera de ellas cancela la caminata automática. */
+export const MOVE_KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
 export class Player {
   pos = new THREE.Vector3();
   vel = new THREE.Vector3();
   yaw = 0;
   pitch = 0;
   onGround = false;
+  /** Caminata automática (tecla F): avanza hacia donde mira la cámara hasta pulsar WASD o las flechas. */
+  auto = false;
 
   private seg = new THREE.Line3();
   private box = new THREE.Box3();
@@ -42,10 +47,13 @@ export class Player {
     const f = this.fwd.set(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
     const r = this.right.set(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
     const wish = this.wish.set(0, 0, 0);
-    if (keys.has('KeyW') || keys.has('ArrowUp')) wish.add(f);
-    if (keys.has('KeyS') || keys.has('ArrowDown')) wish.sub(f);
-    if (keys.has('KeyD') || keys.has('ArrowRight')) wish.add(r);
-    if (keys.has('KeyA') || keys.has('ArrowLeft')) wish.sub(r);
+    if (this.auto) wish.add(f);
+    else {
+      if (keys.has('KeyW') || keys.has('ArrowUp')) wish.add(f);
+      if (keys.has('KeyS') || keys.has('ArrowDown')) wish.sub(f);
+      if (keys.has('KeyD') || keys.has('ArrowRight')) wish.add(r);
+      if (keys.has('KeyA') || keys.has('ArrowLeft')) wish.sub(r);
+    }
     if (wish.lengthSq() > 0) wish.normalize();
     const speed = keys.has('ShiftLeft') || keys.has('ShiftRight') ? RUN : WALK;
     wish.multiplyScalar(speed);
