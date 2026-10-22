@@ -10,7 +10,7 @@ import { createWater } from './water';
 import { Floaters } from './floaters';
 import { createGrass } from './grass';
 import { SkySystem } from './sky';
-import { Player } from './player';
+import { Player, MOVE_KEYS } from './player';
 import { Q } from './config';
 
 // Parámetros opcionales en la URL (para pruebas): ?t=0.72 hora del día, ?x=&z=&yaw=&pitch= posición, ?freeze=1
@@ -20,6 +20,7 @@ const num = (k: string, d: number) => (params.has(k) ? Number(params.get(k)) : d
 const hud = document.getElementById('hud')!;
 const hudText = document.getElementById('hudText')!;
 const fpsEl = document.getElementById('fps')!;
+const autoEl = document.getElementById('auto')!;
 const setStatus = (s: string) => { hudText.innerHTML = s; };
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
 
@@ -93,7 +94,13 @@ async function init() {
   const keys = new Set<string>();
   let locked = false;
   let needsFrame = true;   // dibujar un fotograma aunque el juego esté en pausa (al cargar, al redimensionar)
-  addEventListener('keydown', (e) => { keys.add(e.code); if (e.code === 'Space') e.preventDefault(); });
+  const setAuto = (on: boolean) => { player.auto = on; autoEl.classList.toggle('on', on); };
+  addEventListener('keydown', (e) => {
+    keys.add(e.code);
+    if (e.code === 'Space') e.preventDefault();
+    if (e.code === 'KeyF' && !e.repeat) setAuto(!player.auto);
+    else if (MOVE_KEYS.includes(e.code)) setAuto(false);   // WASD o flechas: se para y sigue con el teclado
+  });
   addEventListener('keyup', (e) => keys.delete(e.code));
   addEventListener('blur', () => keys.clear());
   hud.addEventListener('click', () => renderer.domElement.requestPointerLock());
@@ -112,7 +119,7 @@ async function init() {
     needsFrame = true;
   });
 
-  setStatus('<b style="font-size:24px">LEVEL 94 — MOTION</b><br>Click para jugar<br><small>WASD mover · Shift correr · Espacio saltar · T (mantener) adelantar la hora · Esc soltar el ratón</small>');
+  setStatus('<b style="font-size:24px">LEVEL 94 — MOTION</b><br>Click para jugar<br><small>WASD mover · Shift correr · Espacio saltar · F caminar solo (WASD para parar) · T (mantener) adelantar la hora · Esc soltar el ratón</small>');
   if (shot) hud.classList.add('hidden');
 
   // ---------- Bucle ----------
