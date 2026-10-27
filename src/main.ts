@@ -20,7 +20,6 @@ const num = (k: string, d: number) => (params.has(k) ? Number(params.get(k)) : d
 const hud = document.getElementById('hud')!;
 const hudText = document.getElementById('hudText')!;
 const fpsEl = document.getElementById('fps')!;
-const autoEl = document.getElementById('auto')!;
 const setStatus = (s: string) => { hudText.innerHTML = s; };
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
 
@@ -94,12 +93,11 @@ async function init() {
   const keys = new Set<string>();
   let locked = false;
   let needsFrame = true;   // dibujar un fotograma aunque el juego esté en pausa (al cargar, al redimensionar)
-  const setAuto = (on: boolean) => { player.auto = on; autoEl.classList.toggle('on', on); };
   addEventListener('keydown', (e) => {
     keys.add(e.code);
     if (e.code === 'Space') e.preventDefault();
-    if (e.code === 'KeyF' && !e.repeat) setAuto(!player.auto);
-    else if (MOVE_KEYS.includes(e.code)) setAuto(false);   // WASD o flechas: se para y sigue con el teclado
+    if (e.code === 'KeyF' && !e.repeat) player.auto = !player.auto;
+    else if (MOVE_KEYS.includes(e.code)) player.auto = false;   // WASD o flechas: se para y sigue con el teclado
   });
   addEventListener('keyup', (e) => keys.delete(e.code));
   addEventListener('blur', () => keys.clear());

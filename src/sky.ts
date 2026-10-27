@@ -248,9 +248,9 @@ export class SkySystem {
   }
 
   update(dt: number, camera: THREE.Camera, target: THREE.Vector3, fast: boolean, frozen: boolean) {
-    // avance del tiempo: el día dura ~7.5 min, la noche va 3 veces más rápida
+    // avance del tiempo: el día (sol sobre −6°) dura ~12 min y la noche ~2,3 min
     if (!frozen) {
-      const rate = (this.elevation < -6 ? 3 : 1) / 900;
+      const rate = this.elevation < -6 ? 1 / 300 : 1 / 1350;
       this.time = (this.time + dt * rate * (fast ? 40 : 1)) % 1;
     }
     const a = (this.time - 0.25) * Math.PI * 2;
